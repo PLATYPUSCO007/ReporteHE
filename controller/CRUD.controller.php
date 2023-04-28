@@ -2,6 +2,10 @@
 
 require_once('../model/Repository.model.php');
 
+$model;
+$repository;
+
+
 switch ($_GET['action']) {
     case 'execute':
         if (!isset($_POST['object'])) {

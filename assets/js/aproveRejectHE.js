@@ -1,6 +1,7 @@
-$(document).ready(async function(){
-    config = await loadConfig();
+$(document).ready(function(){
+
     let typeGestion = $('#typeGestion').data('type');
+    console.log('Tipo de Gestion', typeGestion);
     let url;
 
     switch (typeGestion) {
@@ -79,11 +80,6 @@ $(document).ready(async function(){
             let datos2 = JSON.parse(result[0]);
             let html;
 
-            if (typeGestion !== 'gestionJefesGerentes'){
-                let thEstado = document.querySelector('#dataTable th:nth-child(8)');
-                thEstado.innerHTML = 'Proyecto';
-            }
-
             datos2.forEach((dato, index) => {
                 let total = 0;
                 html += '<tr>';
@@ -97,11 +93,7 @@ $(document).ready(async function(){
                 html += `<td class="isSelect">${anno.getFullYear()}</td>`;
                 html += `<td class="isSelect">${ meses[anno.getMonth()] }</td>`;
                 html += `<td class="isSelect">${dato.empleado}</td>`;
-                if (typeGestion !== 'gestionJefesGerentes'){
-                    html += `<td class="isSelect">${dato.motivoGeneral ? dato.motivoGeneral : 'N/A'}</td>`;
-                }else{
-                    html += `<td class="isSelect">${dato.estadoNombre}</td>`;
-                }
+                html += `<td class="isSelect">${dato.estadoNombre}</td>`;
                 html += `<td class="isSelect">${dato.claseName ? dato.claseName : 'N/A'}</td>`;
                 html += `<td class="isSelect">${dato.cecoName ? dato.cecoName : 'N/A'}</td>`;
 
@@ -1094,7 +1086,7 @@ function selectRows(myTable){
             $(this).toggleClass('selected');
         });*/
 
-        myTable.rows({search: 'applied'}).select();
+        myTable.rows().select();
     });
 }
 
@@ -1152,13 +1144,6 @@ function executeAproveAllJefe(myTable){
         if (!rowData){
             return;
         }
-
-        let proyectoAsociado;
-        try {
-            proyectoAsociado = await getProyectoAsoc();
-        }catch (e) {
-            console.log('Error ', e);
-        }
         let estado = getEstadoAprobacion('aprobar');
         let aprobador = $(`#listAprobador`).find(':selected').val();
         let object = {
@@ -1172,20 +1157,6 @@ function executeAproveAllJefe(myTable){
 
         if (!ejecutado){
             return true;
-        }
-
-        if (proyectoAsociado){
-            object = {
-                'object': {
-                    'reportes': JSON.stringify(rowData),
-                    'proyecto': proyectoAsociado
-                }
-            }
-            try {
-                await updateProyecto(object);
-            }catch (e) {
-                console.log('Error ', e);
-            }
         }
 
         var correoAprobador = $('#gestionar').data('aprobadorcorreo');
@@ -1346,34 +1317,34 @@ function getEstadoAprobacion(gestion) {
             switch (rol) {
                 case 'Jefe':
                     if (gestion == 'aprobar'){
-                        estado = config.APROBACION_GERENTE;
+                        estado = 5;
                     }else if(gestion == 'rechazo'){
-                        estado = config.RECHAZO;
+                        estado = 2;
                     }
                     break;
                 case 'Gerente':
                     if (gestion == 'aprobar'){
-                        estado = config.APROBACION_RH;
+                        estado = 7;
                     }else if(gestion == 'rechazoJefe'){
-                        estado = config.RECHAZO_GERENTE;
+                        estado = 6;
                     }else if(gestion == 'rechazo'){
-                        estado = config.RECHAZO;
+                        estado = 2;
                     }
                     break;
             }
             break;
         case 'gestionRH':
             if (gestion == 'aprobar'){
-                estado = config.APROBACION_CONTABLE;
+                estado = 9;
             }else if(gestion == 'rechazo'){
-                estado = config.RECHAZO_RH;
+                estado = 8;
             }
             break;
         case 'gestionContable':
             if (gestion == 'aprobar'){
-                estado = config.APROBADO;
+                estado = 1;
             }else if(gestion == 'rechazo'){
-                estado = config.RECHAZO_CONTABLE;
+                estado = 10;
             }
             break;
         default:
@@ -1382,39 +1353,5 @@ function getEstadoAprobacion(gestion) {
     }
 
     return estado;
-}
-
-function getProyectoAsoc(){
-    return new Promise((resolve, reject)=>{
-        swal('Ingrese un proyecto asociado, si existe.: ', {
-            content: 'input',
-        }).then(async (val)=>{
-            if (val){
-                val = `${val}`;
-                resolve(val);
-            }else{
-                reject(false);
-            }
-        })
-    });
-}
-
-function updateProyecto(object) {
-    return new Promise((resolve, reject)=>{
-        $.ajax({
-            data: object,
-            url: '../controller/CRUD.controller.php?action=execute&model=Reporte&crud=updateProyecto',
-            type: 'post',
-            success: function (result) {
-
-                if (isNaN(parseInt(result))) {
-                    $.notify('No se actualizó el proyecto.', 'error');
-                    reject(false);
-                }
-
-                resolve(true);
-            }
-        });
-    })
 }
 

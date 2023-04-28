@@ -1,9 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION["estadoAutentica"])) {
-    require_once "../../config/LoadConfig.config.php";
-    $config = LoadConfig::getConfig();
-    header('Location:'.$config['URL_SITE'].'index.php');
+    header('Location:http://localhost/HorasExtra/view/');
 }
 ?>
 <!-- Form Reportar -->
@@ -42,8 +40,6 @@ if (!isset($_SESSION["estadoAutentica"])) {
                     </section>
 
                     <section class="col-12">
-                        <h4>Proyecto Asociado</h4>
-                        <input type="text" name="proyecto" id="proyecto" class="fieldReport" required style="width: 30%; margin: auto;"/>
                     </section>
 
                     <section class="col-12">

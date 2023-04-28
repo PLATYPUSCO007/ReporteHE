@@ -1,11 +1,11 @@
-$(document).ready(async function(e) {
-    config = await loadConfig();
-    
+$(document).ready(function(e) {
+
     selectAprobador();
     sumDescuento();
     setDataAprobador();
     sendData();
     showHelp();
+
 
     $.notify.defaults({ className: "info" });
 
@@ -253,7 +253,7 @@ function sumValuesHE() {
         if (!isNaN(valorHE)) {
             suma += parseFloat(valorHE);
             colorSum(suma, 'calcHE');
-            if (suma > config.LIMIT_HE) {
+            if (suma > 48) {
                 suma -= parseFloat(valorHE);
                 $(this).val(0);
                 setTimeout(()=>{
@@ -402,7 +402,6 @@ function sendData() {
         var ceco = $('#ceco').children("option:selected").val();
         var total = $('#total').html();
         var empleado = $('#cc').data('empleado');
-        var proyecto = $('#proyecto').val();
         //***************
 
         if (cc.length <= 0 || empleado.length <= 0 || cargo.length <= 0) {
@@ -419,10 +418,6 @@ function sendData() {
 
         if (ceco.length <= 0){
             ceco = null;
-        }
-
-        if (proyecto.length <= 0){
-            proyecto = null;
         }
 
         var fechas = getFechas();
@@ -481,7 +476,6 @@ function sendData() {
                 'correoEmpleado': correoEmpleado,
                 'cc': cc,
                 'cargo': cargo,
-                'proyecto': proyecto,
                 'fechaInicio': fechas[2],
                 'fechaFin': fechas[1]
             }
@@ -554,7 +548,7 @@ function sendData() {
                         $("#tableHE").addClass("sectionDisabled");
                         $.notify('Enviado con exito', 'success');
 
-                        if (estado === config.EDICION){
+                        if (estado === 1002){
                             $('#butonSend').css({display: 'inline'});
                             $('#loadSpinner').css({display: 'none'});
                             return true;
@@ -659,7 +653,7 @@ function sendData() {
 
                                 $('#result').html(result1);
 
-                                if (estado === config.EDICION){
+                                if (estado === 1002){
                                     return true;
                                 }
 
@@ -745,6 +739,8 @@ function getFechas(){
     }else{
         fechas[1] = fecha.getFullYear() + '-' + (fecha.getMonth() + 1)  + '-' + fecha.getDate();
     }
+
+    console.log('Fechas ...', fechas);
 
     return fechas;
 }
@@ -883,15 +879,15 @@ function getEstado() {
     var estado;
     
     if(tipoAprobador == 'Jefe'){
-        estado = config.APROBACION_JEFE;
+        estado = 3;
     }else if (tipoAprobador == 'Gerente') {
-        estado = config.APROBACION_GERENTE;
+        estado = 5;
     }else if (tipoAprobador == 'contable'){
-        estado = config.APROBACION_CONTABLE;
+        estado = 9;
     }else if (tipoAprobador == 'rh'){
-        estado = config.APROBACION_RH;
+        estado = 7;
     }else{
-        estado = config.EDICION;
+        estado = 1002;
     }
 
     return estado;

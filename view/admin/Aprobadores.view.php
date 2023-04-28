@@ -1,9 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION["isAdmin"]) || (strcasecmp($_SESSION["isAdmin"], 'Si') !== 0)) {
-    require_once "../../config/LoadConfig.config.php";
-    $config = LoadConfig::getConfig();
-    header('Location:'.$config['URL_SITE'].'index.php');
+    header('Location:http://localhost/HorasExtra/view/');
 }
 
 ?>

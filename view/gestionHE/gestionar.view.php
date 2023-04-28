@@ -1,9 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION["estadoAutentica"])) {
-    require_once "../../config/LoadConfig.config.php";
-    $config = LoadConfig::getConfig();
-    header('Location:'.$config['URL_SITE'].'index.php');
+    header('Location:http://localhost/HorasExtra/view/');
 }
 ?>
 
@@ -27,10 +25,10 @@ if (!isset($_SESSION["estadoAutentica"])) {
                 <hr>
             </div>
             <div class="row gtr-uniform">
-                <section class="col-4 col-6-medium col-12-xsmall buttonRejectAprove" >
+                <section class="col-4 col-6-medium col-12-xsmall" style="width: 15%;">
                     <button id="selectAllRows" class="button primary icon solid fa-check-circle fit" style="background-color: #3c763d;">Seleccionar Todo</button>
                 </section>
-                <section class="col-4 col-6-medium col-12-xsmall buttonRejectAprove">
+                <section class="col-4 col-6-medium col-12-xsmall" style="width: 15%;">
                     <button id="deselectAllRows" class="button primary icon solid fa-check-circle fit">Deseleccionar Todo</button>
                 </section>
             </div>
